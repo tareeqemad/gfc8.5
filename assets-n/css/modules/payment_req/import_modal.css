@@ -1,0 +1,50 @@
+
+    /* ---- Step bar (numbered) ---- */
+    .imp-step-num {
+        width: 26px; height: 26px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .7rem; font-weight: 700; color: rgba(255,255,255,.4);
+        background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.2);
+        transition: all .3s ease;
+    }
+    .imp-step-num.active {
+        color: #1e293b; background: #fff; border-color: #fff;
+        box-shadow: 0 2px 8px rgba(255,255,255,.3);
+    }
+    .imp-step-num.done {
+        color: #fff; background: #22c55e; border-color: #22c55e;
+    }
+    .imp-step-line {
+        width: 22px; height: 2px; background: rgba(255,255,255,.15);
+        border-radius: 2px; transition: background .3s ease;
+    }
+    .imp-step-line.done { background: #22c55e; }
+
+    /* ---- Form ---- */
+    .imp-lbl{display:block;font-size:.73rem;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.4px;margin-bottom:.3rem}
+    .imp-inp{width:100%;border:1px solid #e2e8f0;border-radius:9px;padding:.45rem .75rem;font-size:.85rem;
+        box-sizing:border-box;transition:border-color .2s;background:#fff;color:#1e293b}
+    .imp-inp:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+    .imp-inp.err{border-color:#dc2626;background:#fef2f2}
+    .imp-hint{font-size:.68rem;color:#94a3b8;margin-top:.2rem}
+
+    /* ---- Buttons ---- */
+    .imp-btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;
+        border-radius:9px;padding:.45rem 1.1rem;font-weight:600;font-size:.83rem;cursor:pointer;transition:.2s}
+    .imp-btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+    .imp-btn-primary:disabled{opacity:.4;cursor:default;transform:none}
+    .imp-btn-outline{background:#fff;color:#475569;border:1px solid #e2e8f0;
+        border-radius:9px;padding:.4rem .9rem;font-size:.8rem;cursor:pointer;transition:.15s;
+        text-decoration:none;display:inline-flex;align-items:center;gap:.35rem}
+    .imp-btn-outline:hover{background:#f1f5f9}
+
+    /* ---- Stats ---- */
+    .imp-stat-card{flex:1;min-width:90px;border:1px solid;border-radius:10px;padding:.6rem .85rem;text-align:center}
+    .imp-stat-val{font-size:1.4rem;font-weight:800;line-height:1.2}
+    .imp-stat-lbl{font-size:.68rem;color:#64748b;margin-top:.15rem}
+
+    /* ---- Table ---- */
+    .imp-th{padding:.4rem .65rem;text-align:right;font-size:.7rem;font-weight:600;color:#64748b;
+        border-bottom:1px solid #e2e8f0;white-space:nowrap}
+    .imp-td{padding:.4rem .65rem;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+

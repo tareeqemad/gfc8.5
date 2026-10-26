@@ -1,0 +1,252 @@
+
+.pr-row{display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap}
+.pr-card{flex:1;min-width:130px;text-align:center;padding:.6rem .5rem;border-radius:10px;border:1px solid #e2e8f0;background:#fff}
+.pr-card .c-label{font-size:.65rem;color:#64748b;margin-bottom:.15rem}
+.pr-card .c-val{font-size:1rem;font-weight:800;direction:ltr;display:inline-block}
+.pr-card .c-cnt{font-size:.7rem;font-weight:600;color:#94a3b8;margin-top:.1rem}
+.pr-card.c-total{background:#1e293b;border-color:#1e293b}.pr-card.c-total .c-label,.pr-card.c-total .c-val{color:#fff}
+.bh-status{font-weight:600;font-size:.78rem;padding:.3em .7em;border-radius:6px}
+.bh-status.s0{background:#dbeafe;color:#1e40af}
+.bh-status.s2{background:#d1fae5;color:#065f46}
+.bh-status.s9{background:#f1f5f9;color:#94a3b8}
+/* Legend ألوان حالات الموظفين */
+.emp-legend{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;padding:.55rem .9rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;font-size:.78rem}
+.emp-legend-title{font-weight:700;color:#475569}
+.emp-legend-item{display:inline-flex;align-items:center;gap:.4rem}
+.emp-legend-item small{color:#64748b;font-size:.7rem}
+.emp-legend-swatch{display:inline-block;width:18px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,.05)}
+
+.bank-section{margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.bank-header{background:#f8fafc;padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.85rem;cursor:pointer}
+.bank-header:hover{background:#f1f5f9}
+.bank-body table{margin:0;font-size:.8rem}
+.bank-body table th{background:#f8fafc;font-size:.72rem;color:#64748b}
+.amt{font-weight:700;color:#1e293b}
+
+/* Collapsible branch block */
+.branch-block{border-bottom:1px solid #e2e8f0}
+.branch-block:last-child{border-bottom:0}
+.branch-header{background:#f1f5f9;padding:.4rem .8rem;font-size:.78rem;font-weight:600;color:#334155;cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:background .15s;user-select:none}
+.branch-header:hover{background:#e2e8f0}
+.branch-header .br-chev{transition:transform .2s;color:#64748b;font-size:.7rem;width:14px;text-align:center}
+.branch-header.collapsed .br-chev{transform:rotate(-90deg)}
+.branch-header .br-name{flex:1}
+.branch-header .br-meta{color:#64748b;font-weight:500;font-size:.72rem}
+.branch-header .br-amt{font-weight:800;color:#059669;direction:ltr;font-size:.78rem}
+.branch-body{transition:max-height .2s}
+.branch-block.is-collapsed .branch-body{display:none}
+
+/* أزرار اطوي/افتح الكل */
+.bank-tools{display:inline-flex;gap:.25rem;margin-inline-start:.5rem}
+.bank-tools .btn-mini{font-size:.65rem;padding:.1rem .4rem;border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:4px;cursor:pointer}
+.bank-tools .btn-mini:hover{background:#f1f5f9;color:#1e40af;border-color:#93c5fd}
+
+/* Badges في رأس البنك */
+.bsum{font-size:.7rem;padding:.15em .55em;border-radius:5px;font-weight:700}
+.bsum-benef{background:#f5f3ff;color:#6d28d9;border:1px solid #c4b5fd}
+.bsum-multi{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+.bsum-warn{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.bsum-inactive{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1}
+.bsum-split{background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc}
+.bsum-split i{margin-left:3px}
+
+/* Tabs */
+#bdTabs .nav-link{font-size:.85rem;font-weight:600;color:#64748b;padding:.5rem 1.1rem}
+#bdTabs .nav-link.active{color:#1e40af;background:#eff6ff;border-color:#bfdbfe #bfdbfe #fff}
+#bdTabs .nav-link .badge{font-size:.7rem;font-weight:700}
+
+/* Tab 2: Recipients */
+.rcp-stats{display:flex;flex-wrap:wrap;gap:.4rem}
+.rcp-stat{flex:1;min-width:140px;text-align:center;padding:.5rem .6rem;background:#fff;border:1px solid #e2e8f0;border-radius:8px}
+.rcp-stat .rs-lbl{font-size:.65rem;color:#64748b;font-weight:600;margin-bottom:.15rem}
+.rcp-stat .rs-lbl i{margin-left:3px}
+.rcp-stat .rs-val{font-size:1.05rem;font-weight:800;color:#1e293b;direction:ltr}
+.rcp-stat .rs-sub{font-size:.62rem;color:#64748b;font-weight:600;margin-top:.1rem}
+.rcp-stat.c-self{background:#f0fdf4;border-color:#bbf7d0}
+.rcp-stat.c-self .rs-val{color:#15803d}
+.rcp-stat.c-benef{background:#faf5ff;border-color:#c4b5fd}
+.rcp-stat.c-benef .rs-val{color:#6d28d9}
+.rcp-stat.c-owner{background:#fff7ed;border-color:#fed7aa}
+.rcp-stat.c-owner .rs-val{color:#9a3412}
+.rcp-stat.c-amt{background:#1e293b;border-color:#1e293b}
+.rcp-stat.c-amt .rs-lbl{color:#cbd5e1}
+.rcp-stat.c-amt .rs-val{color:#fff}
+.rcp-toolbar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.rcp-tbl{font-size:.82rem}
+.rcp-tbl th{background:#f8fafc;font-size:.75rem;color:#475569;font-weight:700}
+.rcp-tbl tr.row-hidden{display:none}
+.rcp-tbl tr:hover{background:#fffbeb}
+.rcp-type{display:inline-block;font-size:.65rem;padding:.15em .5em;border-radius:4px;font-weight:700;white-space:nowrap}
+.rcp-type i{margin-left:3px}
+
+/* Badges على صف الموظف */
+.b-tag{font-size:.65rem;padding:.1em .4em;border-radius:4px;font-weight:700;margin-inline-start:.3rem;display:inline-block}
+.b-tag i{margin-left:2px}
+.b-tag.b-benef{background:#f5f3ff;color:#6d28d9}
+.b-tag.b-multi{background:#fff7ed;color:#9a3412}
+.b-tag.b-inact{background:#fee2e2;color:#991b1b}
+.b-tag.b-warn{background:#fef2f2;color:#991b1b;font-weight:600}
+.b-tag.b-ok{background:#dcfce7;color:#166534}
+
+/* صف يحتاج انتباه */
+.emp-tbl tr.row-attention{background:#fffbeb}
+.emp-tbl tr.row-attention:hover{background:#fef3c7}
+
+/* زر expand */
+.btn-expand{background:none;border:1px solid #cbd5e1;border-radius:4px;width:24px;height:24px;font-size:.7rem;color:#64748b;padding:0;cursor:pointer}
+.btn-expand:hover{background:#e0f2fe;color:#0369a1;border-color:#7dd3fc}
+.btn-expand.expanded{background:#1e40af;color:#fff;border-color:#1e40af}
+
+/* صف التفاصيل */
+.emp-detail-row td{background:#f8fafc !important;padding:.5rem .85rem !important}
+.acc-mini{display:flex;flex-wrap:wrap;gap:.5rem}
+.acc-card{flex:1;min-width:280px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:.55rem .75rem;font-size:.78rem}
+.acc-card.is-default{border-color:#fbbf24;background:#fffbeb}
+.acc-card.is-inactive{opacity:.55;background:#f1f5f9}
+.acc-card .ac-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.acc-card .ac-prov{font-weight:700;color:#1e293b}
+.acc-card .ac-prov i{margin-left:3px}
+.acc-card .ac-prov.bank i{color:#1e40af}
+.acc-card .ac-prov.wallet i{color:#6d28d9}
+.acc-card .ac-amt{font-weight:800;font-size:.95rem;color:#059669;direction:ltr}
+.acc-card .ac-amt.zero{color:#94a3b8}
+.acc-card .ac-line{font-size:.7rem;color:#475569;direction:ltr;font-family:monospace;letter-spacing:.3px;margin-top:.15rem}
+.acc-card .ac-owner{font-size:.7rem;color:#7c3aed;margin-top:.15rem}
+.acc-card .ac-owner i{margin-left:2px}
+.acc-card .ac-split{font-size:.65rem;color:#64748b;margin-top:.2rem}
+.acc-card .ac-split b{color:#1e293b}
+
+
+    /* ═══ Toolbar الأزرار في batch_detail ═══ */
+    .bd-toolbar {
+        display: flex;
+        gap: .75rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .bd-btn-group {
+        display: inline-flex;
+        gap: .35rem;
+        padding: .25rem;
+        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+    .bd-group-primary { background:#fefce8; border-color:#fde68a; }
+    .bd-group-utility { background:#f1f5f9; border-color:#cbd5e1; }
+
+    .bd-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .42rem .75rem;
+        font-size: .78rem;
+        font-weight: 600;
+        border-radius: 7px;
+        border: 1px solid transparent;
+        background: #fff;
+        color: #1e293b;
+        cursor: pointer;
+        transition: all .15s ease;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .bd-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+    .bd-btn i { font-size: .85rem; }
+
+    /* تنفيذ الصرف — أخضر مميّز */
+    .bd-btn-pay { background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; border-color:#15803d; }
+    .bd-btn-pay:hover { background:linear-gradient(135deg,#15803d,#14532d); color:#fff; }
+
+    /* تحديث البيانات — أصفر */
+    .bd-btn-refresh { background:#fff; color:#92400e; border-color:#fde68a; }
+    .bd-btn-refresh:hover { background:#fef3c7; color:#78350f; }
+
+    /* فك الاحتساب — أحمر outline */
+    .bd-btn-cancel { background:#fff; color:#b91c1c; border-color:#fecaca; }
+    .bd-btn-cancel:hover { background:#fee2e2; color:#7f1d1d; border-color:#fca5a5; }
+
+    /* عكس الصرف — برتقالي */
+    .bd-btn-reverse { background:#fff; color:#c2410c; border-color:#fed7aa; }
+    .bd-btn-reverse:hover { background:#ffedd5; color:#9a3412; }
+
+    /* تصدير — أخضر outline */
+    .bd-btn-export { background:#fff; color:#15803d; border-color:#bbf7d0; }
+    .bd-btn-export:hover { background:#dcfce7; color:#14532d; }
+
+    /* طباعة — أزرق */
+    .bd-btn-print { background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border-color:#2563eb; }
+    .bd-btn-print:hover { background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; }
+
+    /* رجوع — رمادي */
+    .bd-btn-back { background:#fff; color:#475569; border-color:#cbd5e1; }
+    .bd-btn-back:hover { background:#e2e8f0; color:#1e293b; }
+
+    /* tag ملغاة */
+    .bd-tag-cancelled {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .42rem .9rem;
+        font-size: .78rem;
+        font-weight: 700;
+        border-radius: 7px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px dashed #94a3b8;
+    }
+    
+
+        .trend-card{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1px solid #7dd3fc;border-radius:10px;padding:10px 14px}
+        .trend-card .trend-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+        .trend-card .trend-title{font-weight:800;font-size:.9rem;color:#075985}
+        .trend-card .trend-title i{color:#0284c7;margin-left:.3rem}
+        .trend-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-top:8px}
+        .tq-card{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:6px 10px;text-align:center}
+        .tq-card .tq-lbl{font-size:.7rem;color:#64748b;font-weight:600;margin-bottom:1px}
+        .tq-card .tq-val{font-size:.95rem;font-weight:800;color:#1e293b;direction:ltr;display:inline-block}
+        .tq-card .tq-sub{font-size:.68rem;color:#64748b;margin-top:1px;direction:ltr;display:block}
+        .tq-card.tq-up   {background:#f0fdf4;border-color:#86efac}.tq-card.tq-up   .tq-val{color:#15803d}
+        .tq-card.tq-down {background:#fef2f2;border-color:#fca5a5}.tq-card.tq-down .tq-val{color:#b91c1c}
+        .tq-card.tq-eq   {background:#f8fafc}
+        
+
+        .unified-filter{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:10px;padding:10px 14px}
+        .unified-filter .uf-inner{display:flex;align-items:center;flex-wrap:wrap;gap:.6rem}
+        .unified-filter .uf-label{font-size:.85rem;color:#1e3a8a;display:flex;align-items:center;gap:.4rem}
+        .unified-filter .uf-label i{color:#1e40af}
+        .unified-filter .btn-group .btn{font-size:.8rem;font-weight:600;padding:.35rem .75rem}
+        .unified-filter .btn-group .btn .uf-count{display:inline-block;background:rgba(0,0,0,.08);color:inherit;padding:0 .4em;border-radius:8px;font-size:.7rem;font-weight:700;margin-inline-start:.3rem}
+        .unified-filter .btn-check:checked+.btn .uf-count{background:rgba(255,255,255,.3)}
+        .unified-filter .uf-month-box{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .6rem;background:#fff;border:1px solid #93c5fd;border-radius:8px}
+        .unified-filter .uf-month-box i{color:#1e40af}
+        
+
+.diff-stat{border-radius:8px;padding:10px;text-align:center}
+.diff-stat .ds-lbl{font-size:.72rem;font-weight:700;margin-bottom:4px}
+.diff-stat .ds-val{font-size:1.4rem;font-weight:800}
+.diff-stat .ds-sub{font-size:.72rem;font-weight:600;margin-top:2px}
+
+
+.rdt-options{display:flex;flex-direction:column;gap:.5rem}
+.rdt-opt{display:block;cursor:pointer;margin:0}
+.rdt-opt input{position:absolute;opacity:0;pointer-events:none}
+.rdt-opt-card{display:flex;align-items:center;gap:.7rem;padding:.6rem .9rem;border:2px solid #e2e8f0;border-radius:8px;background:#fff;transition:all .15s}
+.rdt-opt:hover .rdt-opt-card{border-color:#cbd5e1;background:#f8fafc}
+.rdt-opt input:checked + .rdt-opt-card{border-color:#1e40af;background:#eff6ff;box-shadow:0 0 0 2px rgba(30,64,175,.1)}
+.rdt-opt-icon{font-size:1.2rem;width:24px;text-align:center}
+.rdt-opt-title{font-weight:700;font-size:.85rem;color:#1e293b}
+.rdt-opt-desc{font-size:.72rem;color:#64748b;margin-top:.1rem}
+.rdt-acc-list{display:flex;flex-direction:column;gap:.4rem;max-height:300px;overflow-y:auto}
+.rdt-acc-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;border:1.5px solid #e2e8f0;border-radius:6px;background:#fff;cursor:pointer;transition:all .15s}
+.rdt-acc-item:hover{border-color:#93c5fd;background:#f8fafc}
+.rdt-acc-item.selected{border-color:#059669;background:#f0fdf4}
+.rdt-acc-item .ai-icon{font-size:1rem;width:22px;text-align:center}
+.rdt-acc-item .ai-info{flex:1;font-size:.78rem}
+.rdt-acc-item .ai-prov{font-weight:700;color:#1e293b}
+.rdt-acc-item .ai-line{font-size:.7rem;color:#64748b;font-family:monospace;margin-top:.1rem}
+.rdt-acc-item .ai-owner{font-size:.7rem;color:#7c3aed;margin-top:.1rem}
+.rdt-acc-item .ai-tag{font-size:.65rem;padding:.1em .4em;border-radius:4px;font-weight:700;background:#fef3c7;color:#92400e}
+
+.btn-redist{font-size:.65rem;padding:.1rem .35rem;line-height:1}
+

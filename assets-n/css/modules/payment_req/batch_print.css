@@ -1,0 +1,198 @@
+
+        @page { size: A4; margin: 12mm 10mm 14mm 10mm; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; }
+        body {
+            font-family: 'Tahoma','Arial',sans-serif;
+            font-size: 11pt;
+            color: #1f2937;
+            line-height: 1.45;
+            background: #fff;
+        }
+        .page { width: 100%; padding: 0; }
+
+        /* ─── Letterhead ─── */
+        .letterhead {
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .letterhead .lh-right { display: flex; align-items: center; gap: 10px; }
+        .letterhead img { height: 56px; }
+        .letterhead .co { font-weight: 800; font-size: 14pt; color: #1e293b; }
+        .letterhead .co small { display: block; font-size: 9pt; font-weight: 500; color: #64748b; margin-top: 2px; }
+        .letterhead .lh-left { text-align: left; font-size: 9pt; color: #64748b; }
+        .letterhead .lh-left strong { color: #1e293b; font-size: 10pt; }
+
+        /* ─── Title ─── */
+        .doc-title {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: 800;
+            color: #1e40af;
+            margin: 6px 0 14px 0;
+            letter-spacing: .5px;
+        }
+        .doc-title small { display: block; font-size: 10pt; color: #64748b; font-weight: 500; margin-top: 3px; }
+
+        /* ─── Info grid ─── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .info-card {
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 5px 8px;
+            text-align: center;
+            background: #f8fafc;
+        }
+        .info-card .lbl { font-size: 8.5pt; color: #64748b; font-weight: 600; margin-bottom: 1px; }
+        .info-card .val { font-size: 11pt; font-weight: 800; color: #1e293b; }
+        .info-card.highlight { background: #f0fdf4; border-color: #86efac; }
+        .info-card.highlight .val { color: #15803d; }
+        .info-card.dark { background: #1e293b; border-color: #1e293b; }
+        .info-card.dark .lbl, .info-card.dark .val { color: #fff; }
+
+        /* ─── Status pill ─── */
+        .status-pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10pt;
+        }
+        .status-pill.s0 { background: #dbeafe; color: #1e40af; }
+        .status-pill.s2 { background: #dcfce7; color: #15803d; }
+        .status-pill.s9 { background: #f1f5f9; color: #64748b; }
+
+        /* ─── Section ─── */
+        .section { margin-bottom: 10px; page-break-inside: avoid; }
+        .section-title {
+            font-size: 11pt;
+            font-weight: 800;
+            color: #1e40af;
+            border-right: 4px solid #1e40af;
+            padding: 2px 8px;
+            margin-bottom: 5px;
+            background: #eff6ff;
+        }
+
+        /* ─── Tags row ─── */
+        .tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: 600;
+            border: 1px solid;
+        }
+        .tag.month { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
+        .tag.req   { background: #fff; color: #334155; border-color: #cbd5e1; }
+        .tag.type  { background: #f5f3ff; color: #6d28d9; border-color: #c4b5fd; }
+        .meta-line { font-size: 9pt; color: #64748b; margin-bottom: 3px; }
+        .meta-line strong { color: #1e293b; }
+
+        /* ─── Tables ─── */
+        table.rpt {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            margin-bottom: 6px;
+        }
+        table.rpt th, table.rpt td {
+            border: 1px solid #94a3b8;
+            padding: 4px 6px;
+            text-align: right;
+        }
+        table.rpt thead th {
+            background: #1e40af;
+            color: #fff;
+            font-weight: 700;
+            font-size: 10pt;
+            text-align: center;
+        }
+        table.rpt tbody tr:nth-child(even) { background: #f8fafc; }
+        table.rpt td.num { text-align: left; direction: ltr; font-variant-numeric: tabular-nums; }
+        table.rpt td.ctr { text-align: center; }
+        table.rpt tr.total-row {
+            background: #1e293b !important;
+            color: #fff;
+            font-weight: 800;
+        }
+        table.rpt tr.total-row td { border-color: #1e293b; }
+        table.rpt tr.total-row td.num { color: #fde68a; }
+        .tbl-empty { text-align: center; color: #94a3b8; padding: 8px; font-style: italic; }
+
+        /* ─── Signatures ─── */
+        .sig-section {
+            margin-top: 18px;
+            page-break-inside: avoid;
+        }
+        .sig-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 6px;
+        }
+        .sig-box {
+            border-top: 1px dashed #94a3b8;
+            padding-top: 4px;
+            text-align: center;
+            font-size: 9.5pt;
+        }
+        .sig-box .role { font-weight: 700; color: #1e293b; }
+        .sig-box .name { font-size: 8.5pt; color: #64748b; min-height: 10pt; margin-top: 14px; }
+
+        /* ─── Footer ─── */
+        .footer {
+            margin-top: 12px;
+            padding-top: 6px;
+            border-top: 1px solid #cbd5e1;
+            font-size: 8pt;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* ─── Print toolbar (on-screen only) ─── */
+        .print-toolbar {
+            position: fixed;
+            top: 8px;
+            left: 8px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 6px 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            z-index: 9999;
+            font-family: 'Tahoma',sans-serif;
+        }
+        .print-toolbar button {
+            background: #1e40af;
+            color: #fff;
+            border: 0;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 11pt;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+        .print-toolbar button:hover { background: #1d4ed8; }
+        .print-toolbar button.sec { background: #64748b; }
+        .print-toolbar button.sec:hover { background: #475569; }
+
+        @media print {
+            .print-toolbar { display: none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            tr { page-break-inside: avoid; }
+            thead { display: table-header-group; }
+        }
+    

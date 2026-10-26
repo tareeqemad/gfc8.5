@@ -1,0 +1,20 @@
+{
+    "require": {
+        "php": "~8.5.12",
+        "ext-curl": "*",
+        "ext-oci8": "*",
+        "ext-openssl": "*",
+        "jaspersoft/rest-client": "2.0.0",
+        "phpoffice/phpspreadsheet": "^5.10"
+    },
+    "scripts": {
+        "post-install-cmd": "@php application/third_party/php85/patch_jasper.php",
+        "post-update-cmd": "@php application/third_party/php85/patch_jasper.php"
+    },
+    "config": {
+        "platform": {
+            "php": "8.5.12"
+        },
+        "sort-packages": true
+    }
+}

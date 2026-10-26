@@ -1,0 +1,87 @@
+/* ═══ Profile Card ═══ */
+.emp-profile{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:linear-gradient(135deg,#1e293b 0%,#334155 100%);color:#fff;border-radius:12px;margin-bottom:.75rem;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.emp-avatar{width:56px;height:56px;border-radius:50%;background:#fff;color:#1e293b;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.emp-info{flex:1;min-width:0}
+.emp-info .name{font-size:1.1rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.emp-info .name .num{background:rgba(255,255,255,.15);padding:.05em .55em;border-radius:5px;font-size:.78rem;font-weight:600}
+.emp-info .meta{display:flex;flex-wrap:wrap;gap:1rem;font-size:.78rem;color:#cbd5e1;margin-top:.4rem}
+.emp-info .meta span{display:inline-flex;align-items:center;gap:.3rem}
+.emp-info .meta b{color:#fff;font-weight:700;direction:ltr}
+.status-pill{display:inline-block;padding:.18em .75em;border-radius:6px;font-size:.7rem;font-weight:700}
+.status-pill.active {background:#10b981;color:#fff}
+.status-pill.retired{background:#94a3b8;color:#fff}
+
+/* ═══ Stats Row ═══ */
+.pa-stats{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.85rem}
+.pa-stat{flex:1;min-width:120px;padding:.65rem .75rem;border-radius:10px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;gap:.6rem}
+.pa-stat .ps-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.pa-stat .ps-body{flex:1;min-width:0}
+.pa-stat .ps-label{font-size:.7rem;color:#64748b;line-height:1.1}
+.pa-stat .ps-val  {font-size:1.05rem;font-weight:800;color:#1e293b;line-height:1.2}
+.pa-stat.bank   .ps-icon{background:#dbeafe;color:#1e40af}
+.pa-stat.wallet .ps-icon{background:#f5f3ff;color:#6d28d9}
+.pa-stat.benef  .ps-icon{background:#fef3c7;color:#92400e}
+.pa-stat.split  .ps-icon{background:#dcfce7;color:#166534}
+.pa-stat.split.bad .ps-icon{background:#fee2e2;color:#991b1b}
+
+/* ═══ Section Headers ═══ */
+.sec-hdr{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:#f8fafc;border-radius:8px;margin-bottom:.6rem;border:1px solid #e2e8f0}
+.sec-hdr h5{margin:0;font-size:.92rem;font-weight:700;color:#1e293b;flex:1}
+.sec-hdr .count{background:#1e293b;color:#fff;padding:.1em .5em;border-radius:5px;font-size:.7rem;font-weight:700}
+
+/* ═══ Account Cards ═══ */
+.acc-card{border:1px solid #e2e8f0;border-radius:10px;padding:.85rem 1rem;margin-bottom:.6rem;background:#fff;transition:box-shadow .15s,transform .15s}
+.acc-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.acc-card.inactive{opacity:.65;background:#fafafa;border-style:dashed}
+.acc-card.wallet{background:#faf5ff;border-color:#e9d5ff}
+.acc-card.beneficiary{background:#fffbeb;border-color:#fde68a}
+.acc-card .acc-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem;flex-wrap:wrap}
+.acc-card .acc-type{font-size:.95rem;font-weight:800;color:#1e293b;flex:1}
+.acc-card .acc-type small{font-weight:500;color:#64748b}
+.acc-card .acc-flag{font-size:.66rem;padding:.15em .55em;border-radius:5px;font-weight:700;letter-spacing:.5px}
+.acc-card .acc-flag.default{background:#22c55e;color:#fff;box-shadow:0 1px 3px rgba(34,197,94,.35)}
+.acc-card .acc-flag.deactivated{background:#fee2e2;color:#991b1b}
+.acc-card .acc-flag.benef{background:#fde68a;color:#92400e}
+.acc-card .acc-body{font-size:.82rem;color:#475569;line-height:1.75;padding:.4rem .55rem;background:rgba(255,255,255,.5);border-radius:6px;border:1px dashed #e2e8f0}
+.acc-card .acc-body b{color:#1e293b;direction:ltr;display:inline-block}
+.acc-card .acc-foot{display:flex;align-items:center;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
+.acc-card .acc-foot .split-info{flex:1;font-size:.76rem;color:#475569;background:transparent;padding:0;display:inline-flex;align-items:center;gap:.35rem}
+.acc-card .acc-foot .split-info b{color:#7c3aed;font-weight:700}
+.acc-card .acc-foot .acc-actions{display:flex;gap:.25rem}
+.acc-card .acc-foot .acc-actions .btn{padding:.2rem .5rem;font-size:.78rem}
+
+.sum-line{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;padding:.55rem .85rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-top:.5rem;font-size:.82rem}
+.sum-line .ok {color:#059669;font-weight:600}
+.sum-line .bad{color:#dc2626;font-weight:600}
+.sum-line .ms-auto-btn{margin-inline-start:auto}
+
+/* شريط التوزيع البصري */
+.dist-wrap{margin-top:.5rem}
+.dist-bar{display:flex;height:28px;border-radius:6px;overflow:hidden;border:1px solid #e2e8f0;background:#f1f5f9}
+.dist-seg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:700;min-width:24px;text-shadow:0 1px 1px rgba(0,0,0,.25);transition:filter .15s}
+.dist-seg:hover{filter:brightness(1.08)}
+.dist-seg.bank      {background:#3b82f6}
+.dist-seg.wallet    {background:#a855f7}
+.dist-seg.benef     {background:#f59e0b}
+.dist-seg.bank.is-rem  {background:repeating-linear-gradient(45deg,#1e40af,#1e40af 6px,#3b82f6 6px,#3b82f6 12px)}
+.dist-seg.wallet.is-rem{background:repeating-linear-gradient(45deg,#6d28d9,#6d28d9 6px,#a855f7 6px,#a855f7 12px)}
+.dist-seg.benef.is-rem {background:repeating-linear-gradient(45deg,#92400e,#92400e 6px,#f59e0b 6px,#f59e0b 12px)}
+.dist-fixed{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
+.dist-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;font-size:.7rem;font-weight:700}
+.dist-legend{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.35rem;font-size:.7rem;color:#64748b}
+.dist-legend .lg-item{display:inline-flex;align-items:center;gap:.25rem}
+.dist-legend .lg-dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+.benef-row{display:flex;align-items:center;gap:.5rem;padding:.6rem .75rem;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:.4rem;background:#fff;font-size:.82rem;transition:box-shadow .15s}
+.benef-row:hover{box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.benef-row.no-attach{border-color:#fca5a5;background:#fff1f2}
+.benef-row .rel-badge{background:#fef3c7;color:#92400e;padding:.18em .55em;border-radius:5px;font-size:.68rem;font-weight:700;letter-spacing:.3px}
+.benef-empty{padding:1.4rem 1rem;text-align:center;color:#94a3b8;background:#f8fafc;border:2px dashed #e2e8f0;border-radius:10px}
+.benef-empty i{font-size:2rem;display:block;margin-bottom:.5rem;color:#cbd5e1}
+.benef-empty .lbl{font-size:.82rem;font-weight:600;color:#64748b}
+.benef-row .att-chip{display:inline-flex;align-items:center;gap:.25rem;padding:.15em .5em;border-radius:5px;font-size:.68rem;font-weight:700;cursor:pointer;border:1px solid transparent;text-decoration:none}
+.benef-row .att-chip.has   {background:#dcfce7;color:#166534;border-color:#86efac}
+.benef-row .att-chip.has:hover{background:#bbf7d0}
+.benef-row .att-chip.miss  {background:#fee2e2;color:#991b1b;border-color:#fca5a5;animation:att-pulse 2s infinite}
+.benef-row .att-chip.miss:hover{background:#fecaca}
+@keyframes att-pulse{0%,100%{opacity:1}50%{opacity:.65}}

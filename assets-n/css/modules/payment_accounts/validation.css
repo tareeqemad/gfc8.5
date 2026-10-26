@@ -1,0 +1,17 @@
+
+.val-stats{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.val-stat{flex:1;min-width:150px;padding:.7rem .85rem;border-radius:10px;border:1px solid #e2e8f0;background:#fff}
+.val-stat .vs-label{font-size:.7rem;color:#64748b;margin-bottom:.15rem}
+.val-stat .vs-val{font-size:1.4rem;font-weight:800;color:#1e293b}
+.val-stat.danger {background:#fee2e2;border-color:#fca5a5}.val-stat.danger  .vs-val{color:#991b1b}
+.val-stat.warning{background:#fef3c7;border-color:#fcd34d}.val-stat.warning .vs-val{color:#92400e}
+.val-stat.info   {background:#e0e7ff;border-color:#a5b4fc}.val-stat.info    .vs-val{color:#3730a3}
+
+.val-tbl td, .val-tbl th { vertical-align: middle; font-size:.82rem }
+.err-pill{display:inline-block;padding:.15em .55em;border-radius:5px;font-size:.7rem;font-weight:700;margin-inline-end:.25rem;margin-bottom:.15rem}
+.err-pill.NO_REMAINDER{background:#fee2e2;color:#991b1b}
+.err-pill.PCT_OVER    {background:#fed7aa;color:#9a3412}
+.err-pill.NO_DEFAULT  {background:#fef3c7;color:#92400e}
+.err-pill.NO_IBAN     {background:#e0e7ff;color:#3730a3}
+.id-mono{font-family:monospace;direction:ltr;font-weight:600}
+

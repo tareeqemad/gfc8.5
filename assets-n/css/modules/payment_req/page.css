@@ -1,0 +1,8 @@
+
+    .table td, .table th { vertical-align: middle; }
+    .b-status { font-weight:600; font-size:0.72rem; padding:0.25em 0.55em; border-radius:5px; }
+    .b-req-type { background:#e0f2fe; color:#075985; font-size:0.73rem; padding:0.25em 0.55em; border-radius:5px; }
+    .amt { font-weight:700; color:#1e293b; }
+    tr.cancelled td { opacity: 0.5; text-decoration: line-through; text-decoration-color: #cbd5e1; }
+    tr.cancelled td:last-child { text-decoration: none; }
+

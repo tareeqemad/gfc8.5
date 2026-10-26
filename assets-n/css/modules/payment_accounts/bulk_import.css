@@ -1,0 +1,15 @@
+
+        .bi-step{display:flex;gap:1rem;padding:1.25rem;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:1rem;background:#fff;align-items:flex-start}
+        .bi-step .step-num{flex:0 0 48px;height:48px;border-radius:50%;background:#1e293b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800}
+        #biStep4 .step-num{background:#16a34a}
+        .bi-step .step-body{flex:1}
+        .bi-step h5{margin:0 0 .35rem;font-weight:800;color:#1e293b}
+        .bi-hint{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:.6rem .85rem;font-size:.78rem;color:#475569}
+        .bi-hint i{margin-left:4px}
+
+        .row-valid{background:#f0fdf4}
+        .row-invalid{background:#fef2f2}
+        .row-duplicate{background:#fffbeb}
+        .err-list{font-size:.7rem;color:#991b1b;margin:0;padding-inline-start:.85rem}
+        .dup-note{font-size:.7rem;color:#92400e;margin:0;padding-inline-start:.85rem}
+    

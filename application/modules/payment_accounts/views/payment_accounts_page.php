@@ -1,0 +1,222 @@
+<?php
+$MODULE_NAME = 'payment_accounts';
+$TB_NAME     = 'payment_accounts';
+$count       = $offset;
+$emp_url     = base_url("$MODULE_NAME/$TB_NAME/emp");
+$colspan     = 10;
+$tot         = $totals ?? ['total'=>0,'bank'=>0,'wallet'=>0,'benef'=>0];
+
+// 🆕 عرض تاريخي: لو حدد المستخدم شهراً، نعرض الحالة التاريخية (IS_ACTIVE من EMPLOYEES_MONTH)
+//     ولا نطغّي عليها بـ HAS_DECEASED/HAS_FROZEN (الحالة الحالية للحساب)
+$is_historical = !empty($the_month);
+$the_month_lbl = '';
+if ($is_historical) {
+    $tm = (string)$the_month;
+    if (strlen($tm) === 6) {
+        $the_month_lbl = substr($tm, 4, 2) . '/' . substr($tm, 0, 4);
+    } else {
+        $the_month_lbl = $tm;
+    }
+}
+?>
+
+<link rel="stylesheet" href="<?= base_url() ?>assets-n/css/modules/payment_accounts/page.css" type="text/css" />
+<div id="paTotals"
+     data-total="<?= (int)$tot['total'] ?>"
+     data-bank="<?= (int)$tot['bank'] ?>"
+     data-wallet="<?= (int)$tot['wallet'] ?>"
+     data-benef="<?= (int)$tot['benef'] ?>"
+     style="display:none"></div>
+
+
+<?php if (!is_array($page_rows) || count($page_rows) === 0): ?>
+    <div class="alert alert-light text-center text-muted py-4">
+        <i class="fa fa-inbox fa-2x d-block mb-2" style="opacity:.4"></i>
+        لا توجد بيانات مطابقة للفلاتر
+    </div>
+<?php else: ?>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <small class="text-muted"><?= isset($total_rows) ? $total_rows : count($page_rows) ?> موظف</small>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered pa-tbl" id="page_tb" data-container="container">
+            <thead class="table-light">
+            <tr>
+                <th style="width:40px">#</th>
+                <th class="emp-cell">الموظف</th>
+                <th class="id-cell">رقم الهوية</th>
+                <th>المقر</th>
+                <th class="text-center" style="width:100px">الحالة</th>
+                <th class="prov-cell">البنك / المحفظة</th>
+                <th class="acc-no-cell">رقم الحساب</th>
+                <th class="iban-cell">IBAN</th>
+                <th class="text-center" style="width:80px">مستفيدون</th>
+                <th class="text-center" style="width:70px"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if ($page > 1): ?>
+                <tr><td colspan="<?= $colspan ?>" id="page-<?= $page ?>" class="page-sector" data-page="<?= $page ?>"></td></tr>
+            <?php endif; ?>
+            <?php foreach ($page_rows as $row):
+                $emp_no     = $row['EMP_NO'] ?? '';
+                $emp_name   = $row['EMP_NAME'] ?? '';
+                $id_no      = $row['ID_NO'] ?? '';
+                $branch     = $row['BRANCH_NAME'] ?? '';
+                $is_active  = (int)($row['IS_ACTIVE'] ?? 0);
+                $has_dead   = (int)($row['HAS_DECEASED'] ?? 0);
+                $has_frozen = (int)($row['HAS_FROZEN'] ?? 0);
+                $acc_cnt    = (int)($row['ACC_COUNT'] ?? 0);
+                $active_cnt = (int)($row['ACTIVE_COUNT'] ?? 0);
+                $bank_cnt   = (int)($row['BANK_COUNT'] ?? 0);
+                $wallet_cnt = (int)($row['WALLET_COUNT'] ?? 0);
+                $benef_cnt  = (int)($row['BENEF_COUNT'] ?? 0);
+                $def_prov   = $row['DEF_PROVIDER_NAME'] ?? '';
+                $def_type   = (int)($row['DEF_PROVIDER_TYPE'] ?? 0);
+                $def_acc    = $row['DEF_ACCOUNT_NO'] ?? '';
+                $def_iban   = $row['DEF_IBAN'] ?? '';
+                $def_owner  = $row['DEF_OWNER_NAME'] ?? '';
+                $reasons    = trim((string)($row['INACTIVE_REASONS_TEXT'] ?? ''));
+                $dec_month  = (int)($row['DECEASED_FROM_MONTH'] ?? 0);   // YYYYMM
+                $frz_month  = (int)($row['FROZEN_FROM_MONTH'] ?? 0);     // YYYYMM
+                $more_cnt   = max(0, $active_cnt - 1);
+
+                // 🛠 helper مختصر: يحوّل 202509 → "09/2025"
+                $fmt_month = function($yyyymm) {
+                    $s = (string)$yyyymm;
+                    return (strlen($s) === 6) ? substr($s, 4, 2) . '/' . substr($s, 0, 4) : $s;
+                };
+                $count++;
+            ?>
+            <tr class="emp-row" data-emp-no="<?= $emp_no ?>">
+                <td class="text-center text-muted"><?= $count ?></td>
+                <td class="emp-cell">
+                    <span class="fw-bold"><?= $emp_no ?></span>
+                    <span class="text-muted d-block" style="font-size:.78rem"><?= $emp_name ?></span>
+                </td>
+                <td class="id-cell">
+                    <?php if ($id_no): ?>
+                        <span class="id-no"><?= htmlspecialchars($id_no) ?></span>
+                    <?php else: ?>
+                        <span class="text-muted" style="font-size:.75rem">—</span>
+                    <?php endif; ?>
+                </td>
+                <td><?= $branch ?></td>
+                <td class="text-center">
+                    <?php if ($is_historical): ?>
+                        <?php
+                            // عرض الحالة التاريخية في الشهر المحدد (من EMPLOYEES_MONTH)
+                            $hist_label = $is_active == 1 ? 'فعّال' : 'متقاعد';
+                            $hist_class = $is_active == 1 ? 's-active' : 's-retired';
+                            // لو فيه فرق بين الحالة الحالية والتاريخية، نضيف ملاحظة
+                            $now_note = '';
+                            if ($has_dead)        $now_note = 'حالياً: متوفى';
+                            elseif ($has_frozen)  $now_note = 'حالياً: حساب مغلق';
+                        ?>
+                        <span class="b-status <?= $hist_class ?>" title="الحالة في <?= $the_month_lbl ?><?= $now_note ? ' • ' . $now_note : '' ?>">
+                            <?= $hist_label ?>
+                            <small style="font-weight:500;opacity:.75;margin-right:3px">· <?= $the_month_lbl ?></small>
+                        </span>
+                        <?php if ($now_note): ?>
+                            <div style="font-size:.65rem;color:#94a3b8;margin-top:2px">
+                                <i class="fa fa-clock-o"></i> <?= $now_note ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php elseif ($has_dead): ?>
+                        <span class="b-status s-deceased" title="عنده حساب بسبب وفاة<?= $dec_month ? ' — منذ ' . $fmt_month($dec_month) : '' ?>">
+                            ⚰ متوفى
+                            <?php if ($dec_month): ?>
+                                <small style="font-weight:500;opacity:.85;margin-right:3px">· <?= $fmt_month($dec_month) ?></small>
+                            <?php endif; ?>
+                        </span>
+                    <?php elseif ($has_frozen): ?>
+                        <span class="b-status s-frozen" title="حسابه البنكي مغلق/مجمد<?= $frz_month ? ' — منذ ' . $fmt_month($frz_month) : '' ?>">
+                            🔒 حساب مغلق
+                            <?php if ($frz_month): ?>
+                                <small style="font-weight:500;opacity:.85;margin-right:3px">· <?= $fmt_month($frz_month) ?></small>
+                            <?php endif; ?>
+                        </span>
+                    <?php elseif ($is_active == 1): ?>
+                        <span class="b-status s-active">فعّال</span>
+                    <?php else: ?>
+                        <span class="b-status s-retired">متقاعد</span>
+                    <?php endif; ?>
+                </td>
+                <?php if ($active_cnt == 0): ?>
+                    <td colspan="3" class="text-center">
+                        <span class="b-acc none"><i class="fa fa-exclamation-triangle"></i> لا يوجد حساب نشط</span>
+                        <?php if ($reasons !== ''): ?>
+                            <div class="reasons-box" title="أسباب الإغلاق على الحسابات الموجودة">
+                                <i class="fa fa-info-circle"></i> <?= htmlspecialchars($reasons) ?>
+                            </div>
+                        <?php endif; ?>
+                    </td>
+                <?php elseif (!$def_prov): ?>
+                    <td colspan="3" class="text-center">
+                        <span class="b-acc none"><i class="fa fa-question-circle"></i> بيانات غير مكتملة</span>
+                    </td>
+                <?php else: ?>
+                    <td class="prov-cell">
+                        <?php if ($def_type == 1): ?>
+                            <span class="prov-name pv-bank"><i class="fa fa-bank"></i><?= $def_prov ?></span>
+                        <?php else: ?>
+                            <span class="prov-name pv-wallet"><i class="fa fa-mobile"></i><?= $def_prov ?></span>
+                        <?php endif; ?>
+                        <?php if ($more_cnt > 0): ?>
+                            <span class="b-acc more" title="حسابات إضافية للموظف">+<?= $more_cnt ?> آخر</span>
+                        <?php endif; ?>
+                        <?php if ($bank_cnt > 0 || $wallet_cnt > 0): ?>
+                            <div class="acc-mix">
+                                <?php if ($bank_cnt > 0): ?>
+                                    <span class="b-acc bank" title="عدد البنوك النشطة"><i class="fa fa-bank"></i> <?= $bank_cnt ?></span>
+                                <?php endif; ?>
+                                <?php if ($wallet_cnt > 0): ?>
+                                    <span class="b-acc wallet" title="عدد المحافظ النشطة"><i class="fa fa-mobile"></i> <?= $wallet_cnt ?></span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </td>
+                    <td class="acc-no-cell">
+                        <?php if ($def_acc): ?>
+                            <div class="acc-no"><?= $def_acc ?></div>
+                            <?php if ($def_owner && $def_owner != $emp_name): ?>
+                                <span class="acc-owner"><i class="fa fa-user-o"></i> <?= $def_owner ?></span>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="text-muted" style="font-size:.75rem">—</span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="iban-cell">
+                        <?php if ($def_iban && $def_type == 1): ?>
+                            <div class="acc-iban"><?= $def_iban ?></div>
+                        <?php else: ?>
+                            <span class="text-muted" style="font-size:.75rem">—</span>
+                        <?php endif; ?>
+                    </td>
+                <?php endif; ?>
+                <td class="text-center">
+                    <?php if ($benef_cnt > 0): ?>
+                        <span class="b-acc benef"><i class="fa fa-user-circle-o"></i> <?= $benef_cnt ?></span>
+                    <?php else: ?>
+                        <span class="text-muted" style="font-size:.75rem">—</span>
+                    <?php endif; ?>
+                </td>
+                <td class="text-center">
+                    <a href="<?= $emp_url ?>/<?= $emp_no ?>" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation()" title="إدارة الحسابات">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+
+<?php echo $this->pagination->create_links(); ?>
+
+<script>
+    if (typeof reBind === 'function') reBind();
+</script>

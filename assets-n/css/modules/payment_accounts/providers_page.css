@@ -1,0 +1,20 @@
+
+    .prov-tbl td, .prov-tbl th { vertical-align: middle; font-size:.82rem }
+    .prov-tbl .name-cell { min-width: 200px }
+    .prov-tbl .iban-cell { min-width: 240px }
+    .prov-tbl tr.selected { background:#fffbeb !important; box-shadow:inset 3px 0 0 #f59e0b }
+    .pv-bank   { color:#1e40af }
+    .pv-wallet { color:#6d28d9 }
+    .type-badge { font-size:.65rem; padding:.15em .55em; border-radius:5px; font-weight:700 }
+    .type-badge.bank   { background:#dbeafe; color:#1e40af }
+    .type-badge.wallet { background:#f5f3ff; color:#6d28d9 }
+    .b-status { font-weight:600; font-size:.7rem; padding:.2em .55em; border-radius:5px }
+    .s-active   { background:#d1fae5; color:#065f46 }
+    .s-inactive { background:#fee2e2; color:#991b1b }
+    .iban-ok      { color:#059669; direction:ltr; font-family:monospace; letter-spacing:.5px; font-weight:700 }
+    .iban-missing { color:#991b1b; background:#fee2e2; padding:.1em .4em; border-radius:4px; font-size:.7rem }
+    .iban-na      { color:#94a3b8; font-style:italic }
+    .acc-num      { direction:ltr; font-family:monospace; font-weight:700; color:#1e293b }
+    .meta-link    { cursor:pointer; padding:.1em .4em; border-radius:4px }
+    .meta-link:hover { background:#e0f2fe; color:#0369a1 }
+

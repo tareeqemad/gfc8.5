@@ -1,0 +1,62 @@
+
+.pr-row{display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.pr-card{flex:1;min-width:120px;text-align:center;padding:.6rem .5rem;border-radius:10px;border:1px solid #e2e8f0;background:#fff}
+.pr-card .c-label{font-size:.65rem;color:#64748b;margin-bottom:.15rem}
+.pr-card .c-val{font-size:1rem;font-weight:800;direction:ltr;display:inline-block}
+.pr-card.c-total{background:#1e293b;border-color:#1e293b}.pr-card.c-total .c-val,.pr-card.c-total .c-label{color:#fff}
+.pr-card.c-active{background:#dbeafe;border-color:#93c5fd}
+.b-status{font-weight:600;font-size:0.72rem;padding:0.25em 0.55em;border-radius:5px}
+.amt{font-weight:700;color:#1e293b}
+.bank-section{margin-bottom:1rem;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.bank-header{background:#f8fafc;padding:.6rem 1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.85rem}
+.bank-header:hover{background:#f1f5f9}
+.bank-body{padding:0}
+.bank-body table{margin:0;font-size:.8rem}
+.bank-body table th{background:#f8fafc;position:sticky;top:0;font-size:.72rem;color:#64748b}
+tr.selected-row{background:#eff6ff !important}
+.chk-all-wrap{padding:.3rem .6rem;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:.78rem}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    .method-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+    .method-card:hover[onclick*="1"]{border-color:#3b82f6!important}
+    .method-card:hover[onclick*="2"]{border-color:#10b981!important}
+
+    /* Preview Modal */
+    .pv-stat-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+    .pv-stat{flex:1;min-width:130px;text-align:center;padding:.65rem .5rem;border-radius:10px;border:1px solid #e2e8f0;background:#fff}
+    .pv-stat .lbl{font-size:.7rem;color:#64748b;margin-bottom:.2rem}
+    .pv-stat .val{font-size:1.4rem;font-weight:800;line-height:1.2}
+    .pv-stat.s-total{background:#1e293b;border-color:#1e293b;color:#fff}
+    .pv-stat.s-total .lbl{color:#94a3b8}
+    .pv-stat.s-ok   {background:#f0fdf4;border-color:#bbf7d0}
+    .pv-stat.s-ok   .val{color:#15803d}
+    .pv-stat.s-warn {background:#fffbeb;border-color:#fde68a}
+    .pv-stat.s-warn .val{color:#92400e}
+    .pv-stat.s-err  {background:#fef2f2;border-color:#fecaca}
+    .pv-stat.s-err  .val{color:#b91c1c}
+    .pv-stat.s-amt  {background:#eff6ff;border-color:#bfdbfe}
+    .pv-stat.s-amt  .val{color:#1e40af;font-size:1.05rem;direction:ltr;display:inline-block}
+
+    .pv-section{border:1px solid #e2e8f0;border-radius:10px;margin-bottom:.75rem;overflow:hidden}
+    .pv-section-head{padding:.55rem .85rem;font-weight:700;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.5rem}
+    .pv-section.s-err  .pv-section-head{background:#fef2f2;color:#991b1b}
+    .pv-section.s-warn .pv-section-head{background:#fffbeb;color:#92400e}
+    .pv-section.s-ok   .pv-section-head{background:#f0fdf4;color:#166534}
+    .pv-section-body{max-height:0;overflow:hidden;transition:max-height .25s}
+    .pv-section.expanded .pv-section-body{max-height:60vh;overflow-y:auto}
+    .pv-section-head .arrow{margin-inline-start:auto;transition:transform .2s}
+    .pv-section.expanded .arrow{transform:rotate(90deg)}
+
+    .pv-table{width:100%;font-size:.78rem;background:#fff}
+    .pv-table th,.pv-table td{padding:.45rem .65rem;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    .pv-table thead{position:sticky;top:0;background:#f8fafc;z-index:1}
+    .pv-table th{font-weight:700;font-size:.72rem;color:#64748b}
+    .pv-table .num{direction:ltr;font-family:monospace;font-weight:700}
+    .pv-issue{font-size:.72rem;color:#991b1b;font-weight:600}
+    .pv-warn-issue{font-size:.72rem;color:#92400e;font-weight:600}
+    .pv-emp-link{color:#1e40af;text-decoration:none;font-weight:700}
+    .pv-emp-link:hover{text-decoration:underline}
+    .pv-fix-btn{padding:.15em .55em;font-size:.7rem;border-radius:5px;background:#fff;border:1px solid #cbd5e1;color:#475569;cursor:pointer}
+    .pv-fix-btn:hover{background:#e0f2fe;color:#0369a1;border-color:#7dd3fc}
+

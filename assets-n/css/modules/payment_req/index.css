@@ -1,0 +1,12 @@
+
+        .pr-row{display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+        .pr-card{flex:1;min-width:120px;text-align:center;padding:.6rem .5rem;border-radius:10px;border:1px solid #e2e8f0;background:#fff}
+        .pr-card .c-label{font-size:.65rem;color:#64748b;margin-bottom:.15rem}
+        .pr-card .c-label i{margin-left:3px}
+        .pr-card .c-val{font-size:1rem;font-weight:800;direction:ltr;display:inline-block}
+        .pr-card .c-cnt{font-size:.7rem;font-weight:600;color:#94a3b8;margin-top:.1rem}
+        .pr-card.c-total{background:#1e293b;border-color:#1e293b}.pr-card.c-total .c-label{color:#94a3b8}.pr-card.c-total .c-val{color:#fff;font-size:1.1rem}
+        .pr-card.c-active{background:#eff6ff;border-color:#bfdbfe}.pr-card.c-active .c-val{color:#1e40af}
+        .pr-card.c-cancel{background:#fef2f2;border-color:#fecaca}.pr-card.c-cancel .c-val{color:#dc2626}
+        .pr-card.c-net{background:#f0fdf4;border-color:#bbf7d0}.pr-card.c-net .c-val{color:#059669;font-size:1.1rem}
+    

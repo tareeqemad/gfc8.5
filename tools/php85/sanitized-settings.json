@@ -1,0 +1,272 @@
+[
+  {
+    "occurrences": 1,
+    "path": "application/libraries/DBConn.php",
+    "setting": "MAIN_ORACLE_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/libraries/DBConn.php",
+    "setting": "MAIN_ORACLE_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/libraries/DBConn.php",
+    "setting": "MAIN_ORACLE_INSTANCE"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/core/GISConn.php",
+    "setting": "GIS_ORACLE_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/core/GISConn.php",
+    "setting": "GIS_ORACLE_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/core/GISConn.php",
+    "setting": "GIS_ORACLE_INSTANCE"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/core/BillsConn.php",
+    "setting": "BILLING_ORACLE_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/core/BillsConn.php",
+    "setting": "BILLING_ORACLE_PASSWORD"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/core/BillsConn.php",
+    "setting": "BILLING_ORACLE_INSTANCE"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/config/config.php",
+    "setting": "EXISTING_ENCRYPTION_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "assets/js/mainFunction.js",
+    "setting": "CAR_TRACKING_XMPP_JID"
+  },
+  {
+    "occurrences": 1,
+    "path": "assets/js/mainFunction.js",
+    "setting": "CAR_TRACKING_XMPP_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/controllers/Login.php",
+    "setting": "COMMENTED_SMTP_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/controllers/Login.php",
+    "setting": "COMMENTED_SMTP_PASS"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/config/database.php",
+    "setting": "CI_DATABASE_HOSTNAME"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/config/database.php",
+    "setting": "CI_DATABASE_USERNAME"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/config/database.php",
+    "setting": "CI_DATABASE_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/config/database.php",
+    "setting": "CI_DATABASE_DATABASE"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/controllers/Reports.php",
+    "setting": "CRYSTAL_USERNAME"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/controllers/Reports.php",
+    "setting": "CRYSTAL_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/controllers/Reports.php",
+    "setting": "CRYSTAL_INSTANCE"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/controllers/Jsperreport.php",
+    "setting": "JASPER_USER"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/controllers/Jsperreport.php",
+    "setting": "JASPER_PASSWORD"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/archive/controllers/Archive.php",
+    "setting": "ARCHIVE_FTP_USERNAME"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/archive/controllers/Archive.php",
+    "setting": "ARCHIVE_FTP_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/treasury/controllers/Dxncharging.php",
+    "setting": "DXN_BEARER_TOKEN"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/controllers/Carmovements.php",
+    "setting": "CAR_SERVICE_API_KEY"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/treasury/controllers/Workfield.php",
+    "setting": "WORKFIELD_SMS_USER"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/treasury/controllers/Workfield.php",
+    "setting": "WORKFIELD_SMS_PASSWORD_APP"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/technical/controllers/Requests.php",
+    "setting": "TECHNICAL_SMS_USERNAME"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/technical/controllers/Requests.php",
+    "setting": "TECHNICAL_SMS_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/interviews/controllers/Interviews_result.php",
+    "setting": "INTERVIEWS_SMS_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/interviews/controllers/Interviews_result.php",
+    "setting": "INTERVIEWS_SMS_PASSWORD"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/payment/views/carmovements_jsview.php",
+    "setting": "CAR_SMS_USER"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/modules/payment/views/carmovements_jsview.php",
+    "setting": "CAR_SMS_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/settings/views/users_index.php",
+    "setting": "IDENTITY_SERVICE_TOKEN"
+  },
+  {
+    "occurrences": 2,
+    "path": "application/views/map_show.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/biunit/views/info/template.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/views/car_movment_show.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/views/tracking_index.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/views/tracking_live_index.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/views/tracking_ost_index.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/views/tracking_ost_page.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment_20220630/views/car_movment_show.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment_20220630/views/tracking_index.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment_20220630/views/tracking_ost_index.php",
+    "setting": "GOOGLE_MAPS_API_KEY"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment/views/carmovements_jsview.php",
+    "setting": "MAPBOX_ACCESS_TOKEN"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/payment_20220630/views/carmovements_jsview.php",
+    "setting": "MAPBOX_ACCESS_TOKEN"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/hr_attendance/controllers/Exit_edit.php",
+    "setting": "ATTENDANCE_DIRECT_1_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/hr_attendance/controllers/Exit_edit.php",
+    "setting": "ATTENDANCE_DIRECT_1_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/hr_attendance/controllers/Exit_edit.php",
+    "setting": "ATTENDANCE_DIRECT_1_INSTANCE"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/hr_attendance/controllers/Exit_edit.php",
+    "setting": "ATTENDANCE_DIRECT_2_USER"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/hr_attendance/controllers/Exit_edit.php",
+    "setting": "ATTENDANCE_DIRECT_2_PASSWORD"
+  },
+  {
+    "occurrences": 1,
+    "path": "application/modules/hr_attendance/controllers/Exit_edit.php",
+    "setting": "ATTENDANCE_DIRECT_2_INSTANCE"
+  }
+]

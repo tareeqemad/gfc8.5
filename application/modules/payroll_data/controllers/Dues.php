@@ -1,0 +1,855 @@
+<?php
+
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+require('./application/third_party/phpoffice/vendor/autoload.php');
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+class Dues extends MY_Controller
+{
+    var $PKG_NAME   = "SALARY_DUES_PKG1";
+    var $MODEL_NAME = "Dues_model";
+    var $PAGE_URL   = "payroll_data/dues/get_page";
+
+    function __construct()
+    {
+        parent::__construct();
+
+        $this->load->model($this->MODEL_NAME);
+
+        $this->load->model('root/rmodel');
+        $this->rmodel->package = $this->PKG_NAME;
+
+        $this->load->model('settings/gcc_branches_model');
+        $this->load->model('payroll_data/salary_dues_types_model');
+
+        // قيم POST الخام (لو احتجتها بفلاتر)
+        $this->serial    = $this->input->post('serial');
+        $this->emp_no    = $this->input->post('emp_no');
+        $this->the_month = $this->input->post('the_month');
+        $this->pay_type  = $this->input->post('pay_type');
+        $this->pay       = $this->input->post('pay');
+        $this->note      = $this->input->post('note');
+        $this->the_date  = $this->input->post('the_date');
+
+        // فلتر
+        $this->branch_no = $this->input->post('branch_no');
+    }
+
+    function index($page = 1, $branch_no = -1, $the_month = -1, $emp_no = -1, $pay_type = -1)
+    {
+        $data['title']   = 'تسديد مستحقات الموظفين';
+        $data['content'] = 'dues_index';
+        $data['page']    = $page;
+
+        $data['branch_no'] = $branch_no;
+        $data['the_month'] = $the_month;
+        $data['emp_no']    = $emp_no;
+        $data['pay_type']  = $pay_type;
+
+        $this->_lookup($data);
+        $this->load->view('template/template1', $data);
+    }
+
+    function get_page($page = 1, $branch_no = -1, $the_month = -1, $emp_no = -1, $pay_type = -1)
+    {
+        $page = (int)($this->input->post('page') ?: $page);
+        if ($page < 1) $page = 1;
+
+        $branch_no = $this->check_vars($branch_no, 'branch_no');
+        $emp_no    = $this->check_vars($emp_no, 'emp_no');
+        $the_month = $this->check_vars($the_month, 'the_month');
+        $pay_type  = $this->check_vars($pay_type, 'pay_type');
+        $mode      = $this->input->post('mode'); // null = full, 'append' = rows only
+
+        $where_sql = ' WHERE NVL(M.STATUS,1) = 1';
+
+        if ($this->user->branch == 1) {
+            $where_sql .= ($branch_no != null) ? " AND EMP_PKG.GET_EMP_BRANCH(M.EMP_NO) = '{$branch_no}'" : '';
+        } else {
+            $where_sql .= " AND EMP_PKG.GET_EMP_BRANCH(M.EMP_NO) = '{$this->user->branch}'";
+        }
+
+        $where_sql .= ($emp_no != null)    ? " AND M.EMP_NO = '{$emp_no}'"       : '';
+        $where_sql .= ($the_month != null) ? " AND M.THE_MONTH = '{$the_month}'" : '';
+        $where_sql .= ($pay_type != null)  ? " AND M.PAY_TYPE = '{$pay_type}'"   : '';
+
+        $per_page = 200;
+        $offset   = (($page - 1) * $per_page);
+        $row      = ($page * $per_page);
+
+        $count_rs    = $this->get_table_count(" GFC.SALARY_DUES_TB M LEFT JOIN GFC.SALARY_DUES_TYPES_TB T ON T.TYPE_ID = M.PAY_TYPE {$where_sql}");
+        $total_rows  = count($count_rs) ? (int)$count_rs[0]['NUM_ROWS'] : 0;
+
+        $data["page_rows"]  = $this->rmodel->getList('SALARY_DUES_TB_LIST', $where_sql, $offset, $row);
+        $data['offset']     = $offset + 1;
+        $data['page']       = $page;
+        $data['total_rows'] = $total_rows;
+        $data['per_page']   = $per_page;
+        $data['has_more']   = ($offset + $per_page) < $total_rows ? 1 : 0;
+
+        if ($mode === 'append') {
+            $this->load->view('dues_page_rows', $data);
+        } else {
+            $data["totals"] = $this->rmodel->getList('SALARY_DUES_TB_TOTALS', $where_sql, 0, 1);
+            $this->load->view('dues_page', $data);
+        }
+    }
+
+    function create()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->_post_validation(false);
+
+            $res = $this->{$this->MODEL_NAME}->create($this->_postedData('create'));
+
+            if (is_numeric($res) && intval($res) > 0) {
+                echo intval($res);
+            } else {
+                $this->print_error($res);
+            }
+        } else {
+            $data['title']    = 'اضافة دفعة مستحق';
+            $data['isCreate'] = true;
+            $data['action']   = 'index';
+            $data['content']  = 'dues_show';
+
+            $this->_lookup($data);
+            $this->load->view('template/template1', $data);
+        }
+    }
+
+    function get($id)
+    {
+        $result = $this->{$this->MODEL_NAME}->get($id);
+        if (!(count($result) == 1)) die('get');
+
+        $data['master_tb_data'] = $result;
+        $data['isCreate']       = false;
+        $data['can_edit']       = 1;
+        $data['action']         = 'edit';
+        $data['content']        = 'dues_show';
+        $data['title']          = 'تفاصيل الدفعة';
+
+        $data['edit_line_type'] = '';
+        if (isset($result[0]['PAY_TYPE']) && $result[0]['PAY_TYPE'] !== '') {
+            $type_row = $this->salary_dues_types_model->get($result[0]['PAY_TYPE']);
+            if (is_array($type_row) && isset($type_row[0]['LINE_TYPE'])) {
+                $data['edit_line_type'] = $type_row[0]['LINE_TYPE'];
+            }
+        }
+
+        $this->_lookup($data);
+        $this->load->view('template/template1', $data);
+    }
+
+    function edit()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->_post_validation(true);
+
+            $res = $this->{$this->MODEL_NAME}->edit($this->_postedData());
+
+            if (is_numeric($res) && intval($res) >= 1) {
+                echo 1;
+            } else {
+                $this->print_error($res);
+            }
+        }
+    }
+
+    public function delete()
+    {
+        $serial = $this->input->post('serial');
+        $note   = $this->input->post('note');
+        $result = $this->{$this->MODEL_NAME}->delete($serial, $note);
+        echo $result;
+    }
+
+    /**************** ترحيل المستحقات من الرواتب ****************/
+
+    /**
+     * AJAX: فحص حالة الترحيل لشهر معين
+     */
+    public function migrate_check()
+    {
+        $the_month = trim((string)$this->input->post('the_month'));
+
+        if ($the_month === '' || strlen($the_month) != 6 || !ctype_digit($the_month)) {
+            echo json_encode(['ok' => false, 'msg' => 'يجب ادخال الشهر بصيغة YYYYMM']);
+            return;
+        }
+
+        // ربط القيد بالبند المسموح
+        $allowed = array('260' => 8, '261' => 7);
+        $con_no  = trim((string)$this->input->post('con_no'));
+
+        if (!isset($allowed[$con_no])) {
+            echo json_encode(['ok' => false, 'msg' => 'نوع المستحق غير صحيح']);
+            return;
+        }
+
+        $pay_type = $allowed[$con_no];
+
+        $data = $this->{$this->MODEL_NAME}->migrate_check((int)$con_no, (int)$the_month, $pay_type);
+
+        echo json_encode([
+            'ok'        => true,
+            'data'      => (is_array($data) && count($data) > 0) ? $data[0] : null,
+            'con_no'    => (int)$con_no,
+            'pay_type'  => $pay_type,
+            'the_month' => $the_month
+        ]);
+    }
+
+    /**
+     * AJAX: تنفيذ ترحيل المستحقات غير المرحلة
+     */
+    public function migrate_run()
+    {
+        $the_month = trim((string)$this->input->post('the_month'));
+
+        if ($the_month === '' || strlen($the_month) != 6 || !ctype_digit($the_month)) {
+            echo json_encode(['ok' => false, 'msg' => 'يجب ادخال الشهر بصيغة YYYYMM']);
+            return;
+        }
+
+        $allowed = array('260' => 8, '261' => 7);
+        $con_no  = trim((string)$this->input->post('con_no'));
+
+        if (!isset($allowed[$con_no])) {
+            echo json_encode(['ok' => false, 'msg' => 'نوع المستحق غير صحيح']);
+            return;
+        }
+
+        $pay_type = $allowed[$con_no];
+
+        $result = $this->{$this->MODEL_NAME}->migrate_run((int)$con_no, (int)$the_month, $pay_type);
+
+        if (isset($result['MSG_OUT']) && $result['MSG_OUT'] == '1') {
+            echo json_encode([
+                'ok'       => true,
+                'inserted' => (int)($result['INSERTED_OUT'] ?? 0),
+                'msg'      => 'تم الترحيل بنجاح'
+            ]);
+        } else {
+            echo json_encode([
+                'ok'  => false,
+                'msg' => $result['MSG_OUT'] ?? 'حدث خطأ غير متوقع'
+            ]);
+        }
+    }
+
+    /**************** helpers ****************/
+
+    function check_vars($var, $c_var)
+    {
+        $var = ($this->{$c_var}) ? $this->{$c_var} : $var;
+        $var = $var == -1 ? null : $var;
+        return $var;
+    }
+
+    function _post_validation($isEdit = false)
+    {
+        if ($isEdit && $this->p_serial == '') {
+            $this->print_error('SERIAL مطلوب للتعديل');
+        }
+
+        if ($this->p_emp_no == '') {
+            $this->print_error('يجب ادخال رقم الموظف');
+        }
+
+        // الشهر صار اختياري: لو موجود لازم يكون YYYYMM
+        if ($this->p_the_month != '' && (strlen($this->p_the_month) != 6 || !ctype_digit($this->p_the_month))) {
+            $this->print_error('يجب ادخال الشهر بصيغة YYYYMM مثل 202501 أو تركه فارغ');
+        }
+
+        if ($this->p_pay_type == '') {
+            $this->print_error('يجب اختيار نوع الدفع');
+        }
+
+        if ($this->p_pay == '' || floatval($this->p_pay) <= 0) {
+            $this->print_error('يجب ادخال مبلغ صحيح');
+        }
+    }
+
+    function _postedData($typ = null)
+    {
+        // لو الشهر فاضي: الشهر الحالي YYYYMM
+        $the_month_val = ($this->p_the_month != '' ? $this->p_the_month : date('Ym'));
+
+        $the_date_val = trim((string)($this->p_the_date ?? $this->the_date ?? ''));
+        if ($the_date_val === '') {
+            $the_date_val = null;
+        } elseif (strpos($the_date_val, '/') !== false) {
+            // تحويل من dd/mm/yyyy إلى DD-MON-YYYY لتفادي ORA-01861
+            $ts = char_to_time($the_date_val);
+            if ($ts !== false) {
+                $mon = array(1 => 'JAN', 2 => 'FEB', 3 => 'MAR', 4 => 'APR', 5 => 'MAY', 6 => 'JUN',
+                    7 => 'JUL', 8 => 'AUG', 9 => 'SEP', 10 => 'OCT', 11 => 'NOV', 12 => 'DEC');
+                $n = (int)date('n', $ts);
+                $the_date_val = date('d', $ts) . '-' . ($mon[$n] ?? 'JAN') . '-' . date('Y', $ts);
+            }
+        }
+
+        $result = array(
+            array('name' => 'SERIAL',    'value' => $this->p_serial,   'type' => '', 'length' => -1),
+            array('name' => 'EMP_NO',    'value' => $this->p_emp_no,   'type' => '', 'length' => -1),
+            array('name' => 'THE_MONTH', 'value' => $the_month_val,    'type' => '', 'length' => -1),
+            array('name' => 'PAY_TYPE',  'value' => $this->p_pay_type, 'type' => '', 'length' => -1),
+            array('name' => 'PAY',       'value' => $this->p_pay,      'type' => '', 'length' => -1),
+            array('name' => 'NOTE',      'value' => $this->p_note,     'type' => '', 'length' => -1),
+            array('name' => 'THE_DATE',  'value' => $the_date_val,    'type' => '', 'length' => -1),
+        );
+
+        if ($typ == 'create') {
+            // insert ما فيه SERIAL
+            unset($result[0]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * AJAX: يرجع ملخص مستحقات/مسدد/متبقي للموظف
+     * يقبل to_month أو the_month
+     * لو الشهر فاضي -> NULL (البروسيجر عندك default NULL)
+     */
+    public function public_get_summary()
+    {
+        $emp_no = trim((string)$this->input->post('emp_no'));
+
+        if ($emp_no === '' || !ctype_digit($emp_no) || intval($emp_no) <= 0) {
+            echo json_encode(['ok' => false, 'msg' => 'Invalid employee']);
+            return;
+        }
+        $summary = $this->{$this->MODEL_NAME}->get_summary((int)$emp_no, null);
+        echo json_encode(['ok' => true, 'data' => $summary]);
+    }
+
+
+    public function import_excel_smart()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            echo json_encode(['ok' => false, 'msg' => 'Invalid request']);
+            return;
+        }
+
+        if (!isset($_FILES['excel_file']) || $_FILES['excel_file']['error'] != 0) {
+            echo json_encode(['ok' => false, 'msg' => 'يجب اختيار ملف Excel']);
+            return;
+        }
+
+        $allowed_ext = array('xlsx', 'xls', 'csv');
+        $client_name = $_FILES['excel_file']['name'];
+        $ext = strtolower(pathinfo($client_name, PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowed_ext, true)) {
+            echo json_encode(['ok' => false, 'msg' => 'نوع الملف غير مسموح. المسموح: xlsx, xls, csv']);
+            return;
+        }
+
+        // upload temp — نستخدم allowed_types = '*' لتجنب رفض الملف بسبب اختلاف MIME (مثلاً الملف منسوخ من القالب)
+        $config['upload_path']   = FCPATH . 'uploads/tmp/';
+        $config['allowed_types'] = '*';
+        $config['max_size']      = 10240;
+        $config['encrypt_name']  = true;
+
+        if (!is_dir($config['upload_path'])) {
+            @mkdir($config['upload_path'], 0777, true);
+        }
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('excel_file')) {
+            echo json_encode(['ok' => false, 'msg' => $this->upload->display_errors('', '')]);
+            return;
+        }
+
+        $uploadData = $this->upload->data();
+        $fullPath   = $uploadData['full_path'];
+
+        // read file
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($fullPath);
+            $sheet       = $spreadsheet->getActiveSheet();
+            $rows        = $sheet->toArray(null, true, true, true);
+        } catch (\Exception $e) {
+            @unlink($fullPath);
+            echo json_encode(['ok' => false, 'msg' => 'فشل قراءة ملف Excel: ' . $e->getMessage()]);
+            return;
+        }
+        @unlink($fullPath);
+
+        if (!is_array($rows) || count($rows) < 2) {
+            echo json_encode(['ok' => false, 'msg' => 'الملف فارغ أو لا يحتوي بيانات كافية']);
+            return;
+        }
+
+        // نوع البند إلزامي من الفورم — الملف 4 أعمدة فقط: A=موظف، B=شهر، C=مبلغ، D=ملاحظات
+        $excel_pay_type_post = $this->input->post('excel_pay_type');
+        if ($excel_pay_type_post === null || $excel_pay_type_post === '') {
+            echo json_encode(['ok' => false, 'msg' => 'يجب اختيار نوع البند من الشاشة أولاً']);
+            return;
+        }
+
+        // detect header (4 أعمدة: EMP_NO, THE_MONTH, PAY, NOTE)
+        $header = $rows[1];
+        $hA = strtoupper(trim((string)($header['A'] ?? '')));
+        $hB = strtoupper(trim((string)($header['B'] ?? '')));
+        $hC = strtoupper(trim((string)($header['C'] ?? '')));
+        $hD = strtoupper(trim((string)($header['D'] ?? '')));
+        $hasHeader = ($hA == 'EMP_NO' && $hB == 'THE_MONTH' && $hC == 'PAY' && $hD == 'NOTE');
+
+        // فحص الحد الأقصى للسجلات (2000 سجل)
+        $maxRows = 2000;
+        $totalRows = count($rows) - ($hasHeader ? 1 : 0);
+        if ($totalRows > $maxRows) {
+            echo json_encode(['ok' => false, 'msg' => "الملف يحتوي على {$totalRows} سجل. الحد الأقصى المسموح هو {$maxRows} سجل"]);
+            return;
+        }
+
+        $startRow = $hasHeader ? 2 : 1;
+        $defaultMonth = (int)date('Ym');
+
+        // جلب قائمة أنواع الدفع من شجرة البنود (فقط الأوراق Leaf)
+        $tree_flat = $this->salary_dues_types_model->getTreeList(1);
+        $validPayTypes = [];
+        if (is_array($tree_flat)) {
+            foreach ($tree_flat as $pt) {
+                // IS_LEAF = 1 يعني بند فرعي قابل للاختيار
+                if (isset($pt['IS_LEAF']) && $pt['IS_LEAF'] == 1) {
+                    $validPayTypes[(int)$pt['TYPE_ID']] = $pt['TYPE_NAME'];
+                }
+            }
+        }
+
+        $useFormPayType = (int) $excel_pay_type_post;
+        if (!isset($validPayTypes[$useFormPayType])) {
+            echo json_encode(['ok' => false, 'msg' => 'نوع البند المحدد من الفورم غير صحيح أو غير مسموح']);
+            return;
+        }
+
+        // جلب قائمة الموظفين المتاحين للتحقق
+        $this->load->model('hr_attendance/hr_attendance_model');
+        $emp_no_cons = $this->hr_attendance_model->get_child($this->user->emp_no, 'hr_admin');
+        $validEmpNos = [];
+        foreach ($emp_no_cons as $emp) {
+            $validEmpNos[(int)$emp['EMP_NO']] = $emp['EMP_NAME'];
+        }
+
+        // 1) parse + normalize into items
+        $items = [];
+        $parseErrors = [];
+        $invalidEmps = [];
+
+        for ($i = $startRow; $i <= count($rows); $i++) {
+            $r = $rows[$i];
+            if (!is_array($r)) continue;
+
+            $empNo    = trim((string)($r['A'] ?? ''));
+            $theMonth = trim((string)($r['B'] ?? ''));
+            $pay      = trim((string)($r['C'] ?? ''));
+            $note     = trim((string)($r['D'] ?? ''));
+
+            if ($empNo === '' && $pay === '') continue;
+
+            // validate basics
+            if ($empNo === '') {
+                $parseErrors[] = "Row {$i}: رقم الموظف فارغ";
+                continue;
+            }
+
+            if (!ctype_digit($empNo) || (int)$empNo <= 0) {
+                $parseErrors[] = "Row {$i}: رقم الموظف '{$empNo}' غير صحيح (يجب أن يكون رقماً صحيحاً)";
+                continue;
+            }
+
+            // التحقق من طول رقم الموظف (من رقمين إلى 4 أرقام)
+            $empNoLength = strlen($empNo);
+            if ($empNoLength < 2 || $empNoLength > 4) {
+                $parseErrors[] = "Row {$i}: رقم الموظف '{$empNo}' غير صحيح (يجب أن يكون من رقمين إلى 4 أرقام)";
+                continue;
+            }
+
+            $empNoInt = (int)$empNo;
+            if (!isset($validEmpNos[$empNoInt])) {
+                if (!isset($invalidEmps[$empNoInt])) {
+                    $invalidEmps[$empNoInt] = [];
+                }
+                $invalidEmps[$empNoInt][] = $i;
+                continue;
+            }
+
+            if ($theMonth === '') {
+                $theMonth = $defaultMonth;
+            } else {
+                $theMonth = preg_replace('/[^0-9]/', '', $theMonth);
+                if (strlen($theMonth) != 6) {
+                    $parseErrors[] = "Row {$i}: الشهر '{$r['B']}' غير صحيح (يجب أن يكون YYYYMM مثل 202501)";
+                    continue;
+                }
+                $theMonth = (int)$theMonth;
+
+                // التحقق من أن الشهر ليس في المستقبل البعيد (أكثر من سنة)
+                $currentYearMonth = (int)date('Ym');
+                $maxFutureMonth = (int)date('Ym', strtotime('+12 months'));
+                if ($theMonth > $maxFutureMonth) {
+                    $parseErrors[] = "Row {$i}: الشهر '{$theMonth}' في المستقبل البعيد (أكثر من سنة)";
+                    continue;
+                }
+            }
+
+            $payTypeInt = $useFormPayType;
+
+            if ($pay === '') {
+                $parseErrors[] = "Row {$i}: المبلغ فارغ";
+                continue;
+            }
+
+            // إزالة الفواصل والمسافات من المبلغ (مثل "1,500" أو "1 500")
+            $pay = str_replace(array(',', ' ', '٬'), '', $pay);
+
+            $payNum = (float)$pay;
+            if ($payNum <= 0) {
+                $parseErrors[] = "Row {$i}: المبلغ '{$pay}' غير صحيح (يجب أن يكون أكبر من صفر)";
+                continue;
+            }
+
+            $items[] = [
+                'row' => $i,
+                'EMP_NO' => $empNoInt,
+                'THE_MONTH' => $theMonth,
+                'PAY_TYPE' => $payTypeInt,
+                'PAY' => $payNum,
+                'NOTE' => $note,
+            ];
+        }
+
+        foreach ($invalidEmps as $empNo => $rowNums) {
+            $parseErrors[] = "الموظف رقم {$empNo} غير موجود في النظام (الصفوف: " . implode(', ', $rowNums) . ")";
+        }
+
+        if (count($items) == 0) {
+            echo json_encode(['ok' => false, 'msg' => 'لا يوجد بيانات صالحة للاستيراد', 'errors' => $parseErrors]);
+            return;
+        }
+
+        /**
+         * 2) SMART GROUPING
+         * - نجمع المكرر: نفس EMP_NO + THE_MONTH + PAY_TYPE => نجمع PAY
+         * - وبنفس الوقت نحسب إجمالي كل موظف (سلة واحدة)
+         */
+        $grouped = [];         // key: emp|month|type
+        $groupedDetails = [];  // key: emp|month|type => array of original rows that were grouped
+        $empTotals = [];       // key: emp => sum pay in file
+        $empRowsMap = [];      // emp => rows list for reporting
+
+        foreach ($items as $it) {
+            $emp = $it['EMP_NO'];
+            $k = $it['EMP_NO'] . '|' . $it['THE_MONTH'] . '|' . $it['PAY_TYPE'];
+
+            if (!isset($grouped[$k])) {
+                $grouped[$k] = $it;
+                $groupedDetails[$k] = [
+                    'original_rows' => [$it['row']],
+                    'original_count' => 1,
+                    'total_pay' => $it['PAY']
+                ];
+            } else {
+                $grouped[$k]['PAY'] += $it['PAY'];
+                $groupedDetails[$k]['original_rows'][] = $it['row'];
+                $groupedDetails[$k]['original_count']++;
+                $groupedDetails[$k]['total_pay'] = $grouped[$k]['PAY'];
+                // ملاحظات: اترك أول NOTE أو ادمج بشكل بسيط
+                if ($it['NOTE'] != '' && $grouped[$k]['NOTE'] == '') $grouped[$k]['NOTE'] = $it['NOTE'];
+            }
+
+            if (!isset($empTotals[$emp])) $empTotals[$emp] = 0;
+            $empTotals[$emp] += $it['PAY'];
+
+            if (!isset($empRowsMap[$emp])) $empRowsMap[$emp] = [];
+            $empRowsMap[$emp][] = $it['row'];
+        }
+
+        $empNos = array_keys($empTotals);
+
+        $balances = []; // emp => balance
+        foreach ($empNos as $emp) {
+            // لازم تعمل دالة بالموديل ترجع balance رقم
+            // مثال: $this->Dues_model->get_emp_balance($emp)
+            $bal = $this->{$this->MODEL_NAME}->get_emp_balance($emp);
+            $balances[$emp] = (float)$bal;
+        }
+
+        /**
+         * 4) Decision: الموظف اللي مجموع الملف تبعه > balance => كله FAIL
+         * اللي <= => OK
+         */
+        $failedEmps = [];
+        $okEmps = [];
+
+        foreach ($empTotals as $emp => $sumPay) {
+            $bal = isset($balances[$emp]) ? $balances[$emp] : 0;
+            if ($sumPay > $bal) {
+                $failedEmps[$emp] = [
+                    'EMP_NO' => $emp,
+                    'FILE_TOTAL' => $sumPay,
+                    'BALANCE' => $bal,
+                    'ROWS' => isset($empRowsMap[$emp]) ? $empRowsMap[$emp] : [],
+                    'REASON' => 'المجموع يتجاوز المتبقي'
+                ];
+            } else {
+                $okEmps[] = $emp;
+            }
+        }
+
+        /**
+         * 5) INSERT فقط للموظفين OK
+         * من grouped data (عشان ما ندخل duplicates)
+         */
+        $inserted = 0;
+        $insertedRecords = [];  // السجلات التي تم إدخالها
+        $groupedRecords = [];   // السجلات التي تم تجميعها
+        $insertErrors = [];
+
+        foreach ($grouped as $k => $row) {
+            $emp = $row['EMP_NO'];
+            if (!in_array($emp, $okEmps)) continue;
+
+            $payload = $this->_importPayloadToCreate($row);
+
+            $res = $this->{$this->MODEL_NAME}->create($payload);
+
+            if (is_numeric($res) && (int)$res > 0) {
+                $inserted++;
+                $insertedRecords[] = [
+                    'EMP_NO' => $emp,
+                    'THE_MONTH' => $row['THE_MONTH'],
+                    'PAY_TYPE' => $row['PAY_TYPE'],
+                    'PAY' => $row['PAY'],
+                    'SERIAL' => (int)$res
+                ];
+
+                // إذا تم تجميع أكثر من سجل واحد
+                if (isset($groupedDetails[$k]) && $groupedDetails[$k]['original_count'] > 1) {
+                    $groupedRecords[] = [
+                        'EMP_NO' => $emp,
+                        'THE_MONTH' => $row['THE_MONTH'],
+                        'PAY_TYPE' => $row['PAY_TYPE'],
+                        'ORIGINAL_ROWS' => $groupedDetails[$k]['original_rows'],
+                        'ORIGINAL_COUNT' => $groupedDetails[$k]['original_count'],
+                        'TOTAL_PAY' => $groupedDetails[$k]['total_pay'],
+                        'SERIAL' => (int)$res
+                    ];
+                }
+            } else {
+                // هذا خطأ أثناء الإدخال (غير خطأ balance)
+                $insertErrors[] = [
+                    'EMP_NO' => $emp,
+                    'KEY' => $k,
+                    'MSG' => is_string($res) ? mb_substr($res, 0, 200) : 'Unknown error'
+                ];
+            }
+        }
+
+        echo json_encode([
+            'ok' => true,
+            'inserted' => $inserted,
+            'total_rows_in_file' => count($items),
+            'grouped_count' => count($groupedRecords),
+            'inserted_records' => $insertedRecords,
+            'grouped_records' => $groupedRecords,
+            'failed_employees' => array_values($failedEmps),
+            'parse_errors' => $parseErrors,
+            'insert_errors' => $insertErrors
+        ]);
+    }
+
+
+    /**
+     * تحويل بيانات الاستيراد إلى الصيغة التي يتوقعها الموديل (_extract_data)
+     */
+    private function _importPayloadToCreate($row)
+    {
+        return array(
+            array('name' => 'EMP_NO',    'value' => $row['EMP_NO'],    'type' => '', 'length' => -1),
+            array('name' => 'THE_MONTH', 'value' => $row['THE_MONTH'], 'type' => '', 'length' => -1),
+            array('name' => 'PAY_TYPE',  'value' => $row['PAY_TYPE'],  'type' => '', 'length' => -1),
+            array('name' => 'PAY',       'value' => $row['PAY'],       'type' => '', 'length' => -1),
+            array('name' => 'NOTE',      'value' => $row['NOTE'] ?? '', 'type' => '', 'length' => -1),
+            array('name' => 'THE_DATE',  'value' => null, 'type' => '', 'length' => -1),
+        );
+    }
+
+    /**
+     * تصدير نتائج الاستعلام إلى Excel
+     */
+    public function export_excel()
+    {
+        $branch_no = $this->check_vars(-1, 'branch_no');
+        $emp_no    = $this->check_vars(-1, 'emp_no');
+        $the_month = $this->check_vars(-1, 'the_month');
+        $pay_type  = $this->check_vars(-1, 'pay_type');
+
+        $where_sql = ' WHERE NVL(M.STATUS,1) = 1';
+
+        if ($this->user->branch == 1) {
+            $where_sql .= ($branch_no != null) ? " AND EMP_PKG.GET_EMP_BRANCH(M.EMP_NO) = '{$branch_no}'" : '';
+        } else {
+            $where_sql .= " AND EMP_PKG.GET_EMP_BRANCH(M.EMP_NO) = '{$this->user->branch}'";
+        }
+
+        $where_sql .= ($emp_no != null)    ? " AND M.EMP_NO = '{$emp_no}'"       : '';
+        $where_sql .= ($the_month != null) ? " AND M.THE_MONTH = '{$the_month}'" : '';
+        $where_sql .= ($pay_type != null)  ? " AND M.PAY_TYPE = '{$pay_type}'"   : '';
+
+        // جلب كل النتائج بدون pagination
+        $rows = $this->rmodel->getList('SALARY_DUES_TB_LIST', $where_sql, 0, 999999);
+
+        if (!is_array($rows) || count($rows) === 0) {
+            echo '<script>alert("لا توجد بيانات للتصدير"); history.back();</script>';
+            return;
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('المستحقات');
+        $sheet->setRightToLeft(true);
+
+        // العناوين
+        $headers = ['م', 'رقم الموظف', 'اسم الموظف', 'الفرع', 'الشهر', 'التاريخ', 'نوع الدفع', 'النوع', 'المبلغ', 'الحالة'];
+        $col = 'A';
+        foreach ($headers as $h) {
+            $sheet->setCellValue($col . '1', $h);
+            $col++;
+        }
+
+        // تنسيق الهيدر
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:J1')->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('1e293b');
+        $sheet->getStyle('A1:J1')->getFont()->getColor()->setRGB('FFFFFF');
+        $sheet->getStyle('A1:J1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        // البيانات
+        $rowNum = 2;
+        $count  = 1;
+        foreach ($rows as $row) {
+            $is_active = (!isset($row['STATUS']) || $row['STATUS'] == 1);
+            $line_type = $row['LINE_TYPE_NAME'] ?? '';
+
+            $the_month_display = '';
+            if (!empty($row['THE_MONTH']) && strlen($row['THE_MONTH']) == 6) {
+                $the_month_display = substr($row['THE_MONTH'], 4, 2) . '/' . substr($row['THE_MONTH'], 0, 4);
+            } else {
+                $the_month_display = $row['THE_MONTH'] ?? '';
+            }
+
+            $the_date_display = '';
+            if (!empty($row['THE_DATE'])) {
+                $ts = @strtotime(str_replace('/', '-', $row['THE_DATE']));
+                $the_date_display = $ts ? date('d/m/Y', $ts) : $row['THE_DATE'];
+            }
+
+            $sheet->setCellValue('A' . $rowNum, $count);
+            $sheet->setCellValue('B' . $rowNum, $row['EMP_NO'] ?? '');
+            $sheet->setCellValue('C' . $rowNum, $row['EMP_NO_NAME'] ?? '');
+            $sheet->setCellValue('D' . $rowNum, $row['BRANCH_NAME'] ?? '');
+            $sheet->setCellValue('E' . $rowNum, $the_month_display);
+            $sheet->setCellValue('F' . $rowNum, $the_date_display);
+            $sheet->setCellValue('G' . $rowNum, $row['PAY_TYPE_NAME'] ?? '');
+            $sheet->setCellValue('H' . $rowNum, ($line_type == 'ADD') ? 'إضافة' : 'خصم');
+            $sheet->setCellValue('I' . $rowNum, (float)($row['PAY'] ?? 0));
+            $sheet->setCellValue('J' . $rowNum, $is_active ? 'فعال' : 'ملغاة');
+
+            // تلوين الإضافة/الخصم
+            if ($line_type == 'ADD') {
+                $sheet->getStyle('I' . $rowNum)->getFont()->getColor()->setRGB('16a34a');
+            } else {
+                $sheet->getStyle('I' . $rowNum)->getFont()->getColor()->setRGB('dc2626');
+            }
+
+            $count++;
+            $rowNum++;
+        }
+
+        // تنسيق عمود المبلغ كأرقام
+        $sheet->getStyle('I2:I' . ($rowNum - 1))
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        // عرض الأعمدة تلقائي
+        foreach (range('A', 'J') as $c) {
+            $sheet->getColumnDimension($c)->setAutoSize(true);
+        }
+
+        // حدود الجدول
+        $sheet->getStyle('A1:J' . ($rowNum - 1))->getBorders()->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        // اسم الملف
+        $filename = 'مستحقات_الموظفين_' . date('Y-m-d_His') . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
+
+    /**
+     * تنزيل قالب Excel لاستيراد المستحقات
+     */
+    public function download_template()
+    {
+        $spreadsheet = new Spreadsheet();
+
+        // Sheet 1: البيانات
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('استيراد المستحقات');
+
+        $headers = ['EMP_NO', 'THE_MONTH', 'PAY', 'NOTE'];
+        $examples = [12345, date('Ym'), 500.00, 'دفعة شهرية'];
+
+        $sheet->setCellValue('A1', $headers[0]);
+        $sheet->setCellValue('B1', $headers[1]);
+        $sheet->setCellValue('C1', $headers[2]);
+        $sheet->setCellValue('D1', $headers[3]);
+
+        $sheet->setCellValue('A2', $examples[0]);
+        $sheet->setCellValue('B2', $examples[1]);
+        $sheet->setCellValue('C2', $examples[2]);
+        $sheet->setCellValue('D2', $examples[3]);
+
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true);
+        $sheet->getColumnDimension('A')->setAutoSize(true);
+        $sheet->getColumnDimension('B')->setAutoSize(true);
+        $sheet->getColumnDimension('C')->setAutoSize(true);
+        $sheet->getColumnDimension('D')->setAutoSize(true);
+
+        $filename = 'قالب_استيراد_المستحقات_' . date('Y-m-d') . '.xlsx';
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
+    }
+
+    function _lookup(&$data)
+    {
+        add_css('combotree.css');
+
+        $data['branches'] = $this->gcc_branches_model->get_all();
+
+        // URL شجرة أنواع الدفع (combotree JSON)
+        $data['pay_type_tree_url'] = base_url('payroll_data/salary_dues_types/public_get_tree_json');
+
+        $this->load->model('hr_attendance/hr_attendance_model');
+        $data['emp_no_cons'] = $this->hr_attendance_model->get_child($this->user->emp_no, 'hr_admin');
+    }
+}
